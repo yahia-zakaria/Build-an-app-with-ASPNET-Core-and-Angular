@@ -12,13 +12,11 @@ namespace API.Services
 {
     public class TokenService : ITokenService
     {
-        private readonly ITokenService _tokenService;
         private readonly IConfiguration _config;
         private readonly SymmetricSecurityKey _key;
-        public TokenService(ITokenService tokenService, IConfiguration config)
+        public TokenService(IConfiguration config)
         {
             _config = config;
-            _tokenService = tokenService;
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["tokenKey"]));
         }
 
