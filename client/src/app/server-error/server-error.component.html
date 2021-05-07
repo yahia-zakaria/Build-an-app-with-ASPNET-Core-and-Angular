@@ -1,0 +1,18 @@
+<h1>Something went wrong please try again</h1>
+<ng-container *ngIf="error">
+<h5 class="text-danger">Error: {{error.message}}</h5>
+<div *ngIf="error.details">
+  <p class="font-weight-bold">Note: if you are seeing this page then the Angular not to blame</p>
+  <p>What to do next?</p>
+  <ol>
+    <li>Open chrome dev tools</li>
+    <li>Inspect the network tab in dev tools</li>
+    <li>Check the failing request</li>
+    <li>Examine the request url - make sure it is correct</li>
+    <li>Reproduce the error in Postman - if you see the same error then the issue is not with Angular</li>
+  </ol>
+  <p>following is stack trace - this is where investigation should start</p>
+</div>
+<code class="mt-5 well">{{error.details}}</code>
+</ng-container>
+

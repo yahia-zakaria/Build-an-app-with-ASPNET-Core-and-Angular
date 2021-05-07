@@ -1,0 +1,10 @@
+<button class="btn btn-outline-primary mr-2" (click)="get401Error()">Test 401 Error</button>
+<button class="btn btn-outline-primary mr-2" (click)="get400Error()">Test 400 Error</button>
+<button class="btn btn-outline-primary mr-2" (click)="get400ValidationError()">Test 400 Validation Error</button>
+<button class="btn btn-outline-primary mr-2" (click)="get404Error()">Test 404 Error</button>
+<button class="btn btn-outline-primary mr-2" (click)="get500Error()">Test 500 Error</button>
+
+
+<textarea #errorDisplay class="form-control mt-1 btn-outline-primary" name="error" id="" cols="40" rows="20">
+  {{error | unescape }}
+</textarea>
