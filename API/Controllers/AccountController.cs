@@ -23,7 +23,7 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserToken>> Login(RegisterViewModel model)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(a => a.UserName == model.Username.ToLower());
+            var user = await _context.Users.FirstOrDefaultAsync(a => a.UserName.ToLower() == model.Username.ToLower());
             if (user == null)
                 return Unauthorized("Invalid username or password");
 

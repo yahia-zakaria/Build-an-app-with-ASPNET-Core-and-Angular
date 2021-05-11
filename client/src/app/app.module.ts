@@ -1,3 +1,4 @@
+import { JwtInterceptor } from './_interceptors/jwt.interceptor';
 import { ErrorInterceptor } from './_interceptors/error.interceptor';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -20,6 +21,9 @@ import { TestErrorsComponent } from './test-errors/test-errors.component';
 import { HTMLEscapeUnescapeModule } from 'html-escape-unescape';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { ServerErrorComponent } from './server-error/server-error.component';
+import { MemberCardComponent } from './members/member-card/member-card.component';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 
 
 @NgModule({
@@ -34,7 +38,8 @@ import { ServerErrorComponent } from './server-error/server-error.component';
     MessagesComponent,
     TestErrorsComponent,
     NotFoundComponent,
-    ServerErrorComponent
+    ServerErrorComponent,
+    MemberCardComponent
   ],
   imports: [
     BrowserModule,
@@ -46,10 +51,13 @@ import { ServerErrorComponent } from './server-error/server-error.component';
     ToastrModule.forRoot({
       positionClass : 'toast-bottom-right'
     }),
-    HTMLEscapeUnescapeModule
+    TabsModule.forRoot(),
+    HTMLEscapeUnescapeModule,
+    NgxGalleryModule
   ],
   providers: [
-    {provide : HTTP_INTERCEPTORS, useClass : ErrorInterceptor, multi : true}
+    {provide : HTTP_INTERCEPTORS, useClass : ErrorInterceptor, multi : true},
+    {provide : HTTP_INTERCEPTORS, useClass : JwtInterceptor, multi : true}
   ],
   bootstrap: [AppComponent]
 })
