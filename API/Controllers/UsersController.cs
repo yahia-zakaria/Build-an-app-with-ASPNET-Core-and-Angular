@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using API.Data;
 using API.DTOs;
@@ -41,6 +43,30 @@ namespace API.Controllers
             .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
             .SingleOrDefaultAsync(a => a.UserName.ToLower().Equals(usersname.ToLower()));
             return _mapper.Map<MemberDto>(user);
+
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Update(UpdateMemberDto member)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(userId))
+            {
+                var id = Convert.ToInt32(userId);
+                var user = await _context.Users.FindAsync(id);
+
+                _mapper.Map(member, user);
+
+                if (await _context.SaveChangesAsync() > 0)
+                {
+                    return NoContent();
+                }
+                return BadRequest("Failed to update user");
+            }
+            else
+            {
+                return Unauthorized();
+            }
 
         }
     }

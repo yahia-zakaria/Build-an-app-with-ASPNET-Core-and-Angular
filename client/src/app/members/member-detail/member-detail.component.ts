@@ -22,16 +22,16 @@ export class MemberDetailComponent implements OnInit {
       {
         width: '500px',
         height: '500px',
-        imagePercent:100,
+        imagePercent: 100,
         thumbnailsColumns: 4,
         imageAnimation: NgxGalleryAnimation.Slide,
-        preview:false
+        preview: false
       }
     ];
   }
 
   getMember() {
-    this.memberService.getMember(this.router.snapshot.paramMap.get('username')).subscribe(member =>{
+    this.memberService.getMember(this.router.snapshot.paramMap.get('username')).subscribe(member => {
       this.member = member;
       this.galleryImages = this.getImages();
     });
@@ -39,12 +39,14 @@ export class MemberDetailComponent implements OnInit {
 
   getImages(): NgxGalleryImage[] {
     var images = [];
-    for(const image of this.member.photos){
-      images.push({
-        small: image.url,
-        medium: image.url,
-        big: image.url
-      });
+    if (this.member) {
+      for (const image of this.member.photos) {
+        images.push({
+          small: image.url,
+          medium: image.url,
+          big: image.url
+        });
+      }
     }
     return images;
   }
