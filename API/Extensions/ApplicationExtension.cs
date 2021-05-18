@@ -1,5 +1,7 @@
 using API.Data;
 using API.Helpers;
+using API.Interfaces;
+using API.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +23,8 @@ namespace API.Extensions
             });
             services.AddCors();
             services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
+            services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
+            services.AddScoped<IPhotoService, PhotoService>();
             return services;
         }
     }

@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,7 +24,9 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserToken>> Login(RegisterViewModel model)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(a => a.UserName.ToLower() == model.Username.ToLower());
+            var user = await _context.Users
+            .Include(a=>a.Photos)
+            .FirstOrDefaultAsync(a => a.UserName.ToLower() == model.Username.ToLower());
             if (user == null)
                 return Unauthorized("Invalid username or password");
 
@@ -37,7 +40,8 @@ namespace API.Controllers
             return new UserToken()
             {
                 Username = user.UserName,
-                Token = _tokenService.CreateToken(user)
+                Token = _tokenService.CreateToken(user),
+                PhotoUrl = user.Photos.FirstOrDefault(a=>a.IsMain).Url
             };
         }
         [HttpPost("register")]

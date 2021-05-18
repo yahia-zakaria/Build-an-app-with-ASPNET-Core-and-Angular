@@ -1,3 +1,4 @@
+import { Photo } from './../_models/photo';
 import { map } from 'rxjs/operators';
 import { Member } from './../_models/member';
 import { Observable, of } from 'rxjs';
@@ -42,6 +43,14 @@ export class MembersService {
         this.members[index] = member;
       })
     );
+  }
+
+  setMainPhoto(photoId : number){
+    return this.http.post(this.baseUrl + 'users/set-main-photo/' + photoId, {});
+  }
+
+  deletePhoto(photoId : number){
+    return this.http.post(this.baseUrl + 'users/delete-photo/' + photoId, {});
   }
 
 }

@@ -27,6 +27,8 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 import { MemberEditComponent } from './members/member-edit/member-edit.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
+import { FileUploadModule } from 'ng2-file-upload';
 
 
 @NgModule({
@@ -43,7 +45,8 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     NotFoundComponent,
     ServerErrorComponent,
     MemberCardComponent,
-    MemberEditComponent
+    MemberEditComponent,
+    PhotoEditorComponent
   ],
   imports: [
     BrowserModule,
@@ -58,7 +61,8 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     TabsModule.forRoot(),
     HTMLEscapeUnescapeModule,
     NgxGalleryModule,
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    FileUploadModule
   ],
   providers: [
     {provide : HTTP_INTERCEPTORS, useClass : ErrorInterceptor, multi : true},
