@@ -3,12 +3,13 @@ import { JwtInterceptor } from './_interceptors/jwt.interceptor';
 import { ErrorInterceptor } from './_interceptors/error.interceptor';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NavComponent } from './nav/nav.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeComponent } from './home/home.component';
@@ -29,6 +30,9 @@ import { MemberEditComponent } from './members/member-edit/member-edit.component
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
 import { FileUploadModule } from 'ng2-file-upload';
+import { InputTextComponent } from './_forms/input-text/input-text.component';
+import { DateInputComponent } from './_forms/date-input/date-input.component';
+
 
 
 @NgModule({
@@ -46,7 +50,9 @@ import { FileUploadModule } from 'ng2-file-upload';
     ServerErrorComponent,
     MemberCardComponent,
     MemberEditComponent,
-    PhotoEditorComponent
+    PhotoEditorComponent,
+    InputTextComponent,
+    DateInputComponent
   ],
   imports: [
     BrowserModule,
@@ -62,7 +68,9 @@ import { FileUploadModule } from 'ng2-file-upload';
     HTMLEscapeUnescapeModule,
     NgxGalleryModule,
     NgxSpinnerModule,
-    FileUploadModule
+    FileUploadModule,
+    ReactiveFormsModule,
+    BsDatepickerModule.forRoot()
   ],
   providers: [
     {provide : HTTP_INTERCEPTORS, useClass : ErrorInterceptor, multi : true},
