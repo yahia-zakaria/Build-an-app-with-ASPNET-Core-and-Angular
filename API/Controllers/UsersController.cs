@@ -7,6 +7,7 @@ using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -33,13 +34,35 @@ namespace API.Controllers
         }
         //  api/users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MemberDto>>> Get()
+        public async Task<ActionResult<PagedList<MemberDto>>> Get([FromQuery] UserParams userParams)
         {
-            var users = await _context.Users
-            .Include(a => a.Photos)
-            .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
-            .ToListAsync();
-            return Ok(_mapper.Map<IEnumerable<MemberDto>>(users));
+            userParams.CurrentUsername = User.GetUserName();
+
+            var user = await _context.Users.FirstOrDefaultAsync(f => f.UserName.Equals(userParams.CurrentUsername));
+
+            if(string.IsNullOrEmpty(userParams.Gender))
+            userParams.Gender = user.Gender == "male" ? "female" : "male";
+
+            var minDob = DateTime.Today.AddYears(-userParams.MaxAge - 1);
+            var maxDob = DateTime.Today.AddYears(-userParams.MinAge);
+
+            var query = _context.Users.AsQueryable();
+            query = query.Where(w => w.UserName != userParams.CurrentUsername);
+            query = query.Where(w => w.Gender == userParams.Gender);
+            query = query.Where(w => w.DateOfBirth >= minDob && w.DateOfBirth <= maxDob);
+
+            query = userParams.OrderBy switch{
+                "createdAt" => query.OrderByDescending(o=>o.CreatedAt),
+                _ => query.OrderByDescending(o=>o.LastActive)
+            };
+
+            var result = query.Include(a => a.Photos)
+                        .ProjectTo<MemberDto>(_mapper.ConfigurationProvider).AsNoTracking();
+            var pagedList = await PagedList<MemberDto>.CreateAsync(result, userParams.PageNumber, userParams.PageSize);
+
+            Response.AddPaginationHeader(userParams.PageNumber, pagedList.PageSize, pagedList.TotalCount, pagedList.TotalPages);
+
+            return pagedList;
         }
         [HttpGet("{username}", Name = "GetUser")]
         public async Task<ActionResult<MemberDto>> Get(string username)

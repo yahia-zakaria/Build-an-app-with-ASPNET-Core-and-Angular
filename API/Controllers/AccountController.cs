@@ -25,7 +25,7 @@ namespace API.Controllers
 
         }
         [HttpPost("login")]
-        public async Task<ActionResult<UserToken>> Login(RegisterViewModel model)
+        public async Task<ActionResult<UserToken>> Login(LoginViewModel model)
         {
             var user = await _context.Users
             .Include(a => a.Photos)
@@ -45,7 +45,8 @@ namespace API.Controllers
                 Username = user.UserName,
                 Token = _tokenService.CreateToken(user),
                 PhotoUrl = user.Photos.FirstOrDefault(a => a.IsMain)?.Url,
-                KnownAs = user.KnownAs
+                KnownAs = user.KnownAs,
+                Gender = user.Gender
             };
         }
         [HttpPost("register")]
@@ -69,12 +70,13 @@ namespace API.Controllers
             {
                 Username = user.UserName,
                 Token = _tokenService.CreateToken(user),
-                KnownAs = user.KnownAs
+                KnownAs = user.KnownAs,
+                Gender = user.Gender
             };
 
         }
 
-        public async Task<bool> UserExists(string username)
+        private async Task<bool> UserExists(string username)
         {
             return await _context.Users.AnyAsync(a => a.UserName.ToLower() == username.ToLower());
         }

@@ -1,3 +1,6 @@
+import { User } from './../../_models/User';
+import { ToastrService } from 'ngx-toastr';
+import { MembersService } from './../../_services/members.service';
 import { Member } from 'src/app/_models/member';
 import { Component, Input, OnInit } from '@angular/core';
 
@@ -8,11 +11,17 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class MemberCardComponent implements OnInit {
 
-@Input() member : Member;
+  @Input() member: Member;
 
-  constructor() { }
+  constructor(private memberService: MembersService, private toastr: ToastrService) {
+
+  }
 
   ngOnInit(): void {
   }
-
+  addLike(username: string) {
+    this.memberService.addLike(username).subscribe(() => {
+      this.toastr.success("you have liked " + username);
+    })
+  }
 }
