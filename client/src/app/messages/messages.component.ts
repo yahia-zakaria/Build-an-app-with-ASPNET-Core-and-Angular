@@ -1,3 +1,6 @@
+import { MessageService } from './../_services/message.service';
+import { Pagination } from './../_models/pagination';
+import { Message } from './../_models/message';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -6,10 +9,33 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./messages.component.css']
 })
 export class MessagesComponent implements OnInit {
+  messages: Message[];
+  pagination: Pagination;
+  container = "Unread";
+  pageNumber = 1;
+  pageSize = 5;
 
-  constructor() { }
+  constructor(private messageService: MessageService) { }
 
   ngOnInit(): void {
+    this.loadMessages();
   }
 
+  loadMessages(){
+    this.messageService.getMessages(this.pageNumber, this.pageSize, this.container).subscribe(response=>{
+      this.messages = response.result;
+      this.pagination = response.pagination;
+    })
+  }
+
+  deleteMessage(id: number){
+    this.messageService.deleteMessage(id).subscribe(()=>{
+      this.messages.splice(this.messages.findIndex(i=>i.id === id), 1)
+    })
+  }
+
+  changePage(event: any){
+    this.pageNumber = event.page;
+    this.loadMessages();
+  }
 }
