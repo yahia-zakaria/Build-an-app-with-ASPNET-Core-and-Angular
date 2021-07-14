@@ -40,8 +40,8 @@ namespace API.Controllers
 
             var user = await _context.Users.FirstOrDefaultAsync(f => f.UserName.Equals(userParams.CurrentUsername));
 
-            if(string.IsNullOrEmpty(userParams.Gender))
-            userParams.Gender = user.Gender == "male" ? "female" : "male";
+            if (string.IsNullOrEmpty(userParams.Gender))
+                userParams.Gender = user.Gender == "male" ? "female" : "male";
 
             var minDob = DateTime.Today.AddYears(-userParams.MaxAge - 1);
             var maxDob = DateTime.Today.AddYears(-userParams.MinAge);
@@ -51,9 +51,10 @@ namespace API.Controllers
             query = query.Where(w => w.Gender == userParams.Gender);
             query = query.Where(w => w.DateOfBirth >= minDob && w.DateOfBirth <= maxDob);
 
-            query = userParams.OrderBy switch{
-                "createdAt" => query.OrderByDescending(o=>o.CreatedAt),
-                _ => query.OrderByDescending(o=>o.LastActive)
+            query = userParams.OrderBy switch
+            {
+                "createdAt" => query.OrderByDescending(o => o.CreatedAt),
+                _ => query.OrderByDescending(o => o.LastActive)
             };
 
             var result = query.Include(a => a.Photos)
@@ -64,7 +65,7 @@ namespace API.Controllers
 
             return pagedList;
         }
-        [HttpGet("{username}", Name = "GetUser")]
+        [HttpGet("{username}")]
         public async Task<ActionResult<MemberDto>> Get(string username)
         {
             var user = await _context.Users

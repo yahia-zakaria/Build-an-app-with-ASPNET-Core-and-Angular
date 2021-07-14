@@ -36,6 +36,7 @@ import { FileUploadModule } from 'ng2-file-upload';
 import { InputTextComponent } from './_forms/input-text/input-text.component';
 import { DateInputComponent } from './_forms/date-input/date-input.component';
 import { MemberMessagesComponent } from './members/member-messages/member-messages.component';
+import { AdminPanelComponent } from './admin-panel/admin-panel.component';
 
 
 
@@ -57,7 +58,8 @@ import { MemberMessagesComponent } from './members/member-messages/member-messag
     PhotoEditorComponent,
     InputTextComponent,
     DateInputComponent,
-    MemberMessagesComponent
+    MemberMessagesComponent,
+    AdminPanelComponent
   ],
   imports: [
     BrowserModule,

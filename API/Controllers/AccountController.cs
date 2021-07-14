@@ -7,6 +7,7 @@ using API.DTOs;
 using API.Entities;
 using API.Interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,8 +18,13 @@ namespace API.Controllers
         private readonly DataContext _context;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
-        public AccountController(DataContext context, ITokenService tokenService, IMapper mapper)
+        private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
+        public AccountController(DataContext context, ITokenService tokenService, IMapper mapper,
+        UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
         {
+            _userManager = userManager;
+            _signInManager = signInManager;
             _mapper = mapper;
             _tokenService = tokenService;
             _context = context;
@@ -33,17 +39,14 @@ namespace API.Controllers
             if (user == null)
                 return Unauthorized("Invalid username or password");
 
-            using var hmac = new HMACSHA512(user.PasswordSalt);
-            var loginPasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(model.Password));
+            var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
 
-            for (var i = 0; i < loginPasswordHash.Length; i++)
-                if (loginPasswordHash[i] != user.PasswordHash[i])
-                    return Unauthorized("Invalid username or password");
+            if (!result.Succeeded) return Unauthorized();
 
             return new UserToken()
             {
                 Username = user.UserName,
-                Token = _tokenService.CreateToken(user),
+                Token = await _tokenService.CreateToken(user),
                 PhotoUrl = user.Photos.FirstOrDefault(a => a.IsMain)?.Url,
                 KnownAs = user.KnownAs,
                 Gender = user.Gender
@@ -56,20 +59,19 @@ namespace API.Controllers
                 return BadRequest("The username is already exists!!");
 
             var user = _mapper.Map<AppUser>(model);
-
-            using var hmac = new HMACSHA512();
-
             user.UserName = model.Username.ToLower();
-            user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(model.Password));
-            user.PasswordSalt = hmac.Key;
+            var result = await _userManager.CreateAsync(user, model.Password);
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            if (!result.Succeeded) return BadRequest(result.Errors);
+
+            result = await _userManager.AddToRoleAsync(user, "Member");
+
+            if (!result.Succeeded) return BadRequest(result.Errors);
 
             return new UserToken()
             {
                 Username = user.UserName,
-                Token = _tokenService.CreateToken(user),
+                Token = await _tokenService.CreateToken(user),
                 KnownAs = user.KnownAs,
                 Gender = user.Gender
             };
@@ -78,7 +80,7 @@ namespace API.Controllers
 
         private async Task<bool> UserExists(string username)
         {
-            return await _context.Users.AnyAsync(a => a.UserName.ToLower() == username.ToLower());
+            return await _userManager.Users.AnyAsync(a => a.UserName.ToLower() == username.ToLower());
         }
     }
 }
