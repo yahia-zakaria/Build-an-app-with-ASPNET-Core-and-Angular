@@ -60,10 +60,6 @@ namespace API.Data.Repos
             return await _context.Users.Include(i => i.LikedUsers)
             .FirstOrDefaultAsync(f => f.Id == userId);
         }
-        public async Task<bool> SaveAllAsync()
-        {
-            return await _context.SaveChangesAsync() > 0;
-        }
 
     }
 }

@@ -1,3 +1,4 @@
+import { PresenceService } from './presence.service';
 import { environment } from './../../environments/environment';
 import { User } from './../_models/User';
 import { HttpClient } from '@angular/common/http';
@@ -10,7 +11,7 @@ import { ReplaySubject } from 'rxjs';
 })
 export class AccountService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private presenceService: PresenceService) { }
   baseUrl = environment.apiUrl;
   private currentUserSource = new ReplaySubject<User>(1);
   currentUser$ = this.currentUserSource.asObservable();
@@ -21,6 +22,7 @@ export class AccountService {
         const user = response;
         if (user) {
           this.setCurrentUser(user)
+          this.presenceService.createHubConnection(user);
         }
       })
     )
@@ -37,6 +39,7 @@ export class AccountService {
   logout() {
     localStorage.removeItem('user');
     this.currentUserSource.next(null);
+    this.presenceService.stopHubConnection();
   }
 
   register(model:any){
@@ -46,6 +49,7 @@ export class AccountService {
         if (user) {
           localStorage.setItem('user', JSON.stringify(user));
           this.currentUserSource.next(user);
+          this.presenceService.createHubConnection(user);
         }
         return user;
       })

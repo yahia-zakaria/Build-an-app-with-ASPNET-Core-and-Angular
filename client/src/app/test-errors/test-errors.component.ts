@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { collectExternalReferences } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
@@ -9,7 +10,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TestErrorsComponent implements OnInit {
 
-  baseUrl = 'http://localhost:5000/api/';
+  baseUrl = environment.apiUrl;
   error: string = "";
 
   constructor(private http: HttpClient) { }

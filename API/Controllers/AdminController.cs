@@ -47,7 +47,7 @@ namespace API.Controllers
 
             if (!result.Succeeded) return BadRequest(result.Errors);
 
-            result = await _userManager.RemoveFromRolesAsync(user, existingRoles);
+            result = await _userManager.RemoveFromRolesAsync(user, existingRoles.Except(selectedRoles));
 
             if (!result.Succeeded) return BadRequest(result.Errors);
 

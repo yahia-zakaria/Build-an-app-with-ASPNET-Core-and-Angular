@@ -6,6 +6,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { TimeagoModule } from 'ngx-timeago';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -37,6 +38,11 @@ import { InputTextComponent } from './_forms/input-text/input-text.component';
 import { DateInputComponent } from './_forms/date-input/date-input.component';
 import { MemberMessagesComponent } from './members/member-messages/member-messages.component';
 import { AdminPanelComponent } from './admin-panel/admin-panel.component';
+import { HasRoleDirective } from './_directives/has-role.directive';
+import { UserManagementComponent } from './user-management/user-management.component';
+import { PhotoManagementComponent } from './photo-management/photo-management.component';
+import { RolesComponent } from './Modals/roles/roles.component';
+import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 
 
 
@@ -59,7 +65,12 @@ import { AdminPanelComponent } from './admin-panel/admin-panel.component';
     InputTextComponent,
     DateInputComponent,
     MemberMessagesComponent,
-    AdminPanelComponent
+    AdminPanelComponent,
+    HasRoleDirective,
+    UserManagementComponent,
+    PhotoManagementComponent,
+    RolesComponent,
+    ConfirmDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -80,7 +91,8 @@ import { AdminPanelComponent } from './admin-panel/admin-panel.component';
     BsDatepickerModule.forRoot(),
     PaginationModule.forRoot(),
     ButtonsModule.forRoot(),
-    TimeagoModule.forRoot()
+    TimeagoModule.forRoot(),
+    ModalModule.forRoot()
   ],
   providers: [
     {provide : HTTP_INTERCEPTORS, useClass : ErrorInterceptor, multi : true},

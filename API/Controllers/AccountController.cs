@@ -15,27 +15,25 @@ namespace API.Controllers
 {
     public class AccountController : BaseApiController
     {
-        private readonly DataContext _context;
         private readonly ITokenService _tokenService;
-        private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
-        public AccountController(DataContext context, ITokenService tokenService, IMapper mapper,
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+        public AccountController(IUnitOfWork unitOfWork, ITokenService tokenService, IMapper mapper,
         UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
         {
+            _mapper = mapper;
+            _unitOfWork = unitOfWork;
             _userManager = userManager;
             _signInManager = signInManager;
-            _mapper = mapper;
             _tokenService = tokenService;
-            _context = context;
 
         }
         [HttpPost("login")]
         public async Task<ActionResult<UserToken>> Login(LoginViewModel model)
         {
-            var user = await _context.Users
-            .Include(a => a.Photos)
-            .FirstOrDefaultAsync(a => a.UserName.ToLower() == model.Username.ToLower());
+            var user = await _unitOfWork.UserRepository.GetUserByUserNameAsync(model.Username);
             if (user == null)
                 return Unauthorized("Invalid username or password");
 
