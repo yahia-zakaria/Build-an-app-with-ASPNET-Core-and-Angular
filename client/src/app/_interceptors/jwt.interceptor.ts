@@ -9,6 +9,7 @@ import {
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { JwtHelper } from 'angular2-jwt';
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
@@ -19,6 +20,9 @@ export class JwtInterceptor implements HttpInterceptor {
     let currentUser: User
     this.accountService.currentUser$.pipe(take(1)).subscribe(user => currentUser = user)
     if (currentUser) {
+      // let jwtHelper = new JwtHelper();
+      // let token = currentUser.token;
+      // let isExpired = jwtHelper.isTokenExpired(token);
       request = request.clone({
         setHeaders: {
           Authorization: `Bearer ${currentUser.token}`
